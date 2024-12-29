@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+  Serverless CRUD API for Order entity using AWS SAM
+
+Resources:
+  OrderFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: com.example.crudapiserverless.LambdaHandler::handleRequest
+      Runtime: java17
+      MemorySize: 512
+      Timeout: 30
+      CodeUri: .aws-sam/build/OrderFunction
+      Environment:
+        Variables:
+          TABLE_NAME: orders
+          AWS_DYNAMODB_ENDPOINT: http://172.19.80.1:8000
+          AWS_USE_LOCAL_CREDENTIALS: true
+          AWS_DYNAMODB_REGION: us-east-1
+      Events:
+        CreateOrder:
+          Type: Api
+          Properties:
+            Path: /orders
+            Method: post
+        GetOrder:
+          Type: Api
+          Properties:
+            Path: /orders/{id}
+            Method: get
+        DeleteOrder:
+          Type: Api
+          Properties:
+            Path: /orders/{id}
+            Method: delete
+        ListOrders:
+          Type: Api
+          Properties:
+            Path: /orders
+            Method: get
+
+Outputs:
+  OrderApi:
+    Description: "API Gateway endpoint URL for Order entity"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/orders/"
