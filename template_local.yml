@@ -11,14 +11,14 @@ Resources:
       Runtime: java17
       MemorySize: 512
       Timeout: 30
-      CodeUri: .aws-sam/build/OrderFunction
-      #CodeUri: CrudApiServerless
+#      CodeUri: .aws-sam/build/OrderFunction
+      CodeUri: CrudApiServerless
       Environment:
         Variables:
           TABLE_NAME: orders
           AWS_DYNAMODB_ENDPOINT: http://172.19.80.1:8000
-          AWS_USE_LOCAL_CREDENTIALS: false
-          AWS_DYNAMODB_REGION: ap-northeast-1
+          AWS_USE_LOCAL_CREDENTIALS: true
+          AWS_DYNAMODB_REGION: us-east-1
       SnapStart:
         ApplyOn: PublishedVersions
       Events:
@@ -47,8 +47,6 @@ Resources:
           Properties:
             Path: /orders/{id}
             Method: put
-      Policies:
-        - AmazonDynamoDBFullAccess
 
 Outputs:
   OrderApi:

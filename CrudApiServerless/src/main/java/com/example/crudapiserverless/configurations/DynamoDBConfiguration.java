@@ -46,9 +46,7 @@ public class DynamoDBConfiguration {
                     .build();
         } else {
             return DynamoDbClient.builder()
-                    .endpointOverride(URI.create(dynamoDbEndpoint))
                     .region(Region.of(region))
-                    .credentialsProvider(DefaultCredentialsProvider.create())
                     .build();
         }
     }

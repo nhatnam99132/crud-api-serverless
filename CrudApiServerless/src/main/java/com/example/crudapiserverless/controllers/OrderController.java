@@ -83,4 +83,21 @@ public class OrderController {
         ApiResponse<List<OrderDTO>> response = new ApiResponse<>(orderDTOs, null);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<OrderDTO>> updateOrder(@PathVariable String id, @Validated @RequestBody OrderDTO orderDTO) {
+        Order existingOrder = orderService.getOrder(id);
+        if (existingOrder == null) {
+            ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "Order Not Found", "Order with ID " + id + " not found", "/orders/" + id);
+            ApiResponse<OrderDTO> response = new ApiResponse<>(null, errorResponse);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        orderDTO.setId(id);
+        orderDTO.setTimestamp(LocalDateTime.now());
+        Order updatedOrder = modelMapper.map(orderDTO, Order.class);
+        orderService.saveOrder(updatedOrder);
+        OrderDTO updatedOrderDTO = modelMapper.map(updatedOrder, OrderDTO.class);
+        ApiResponse<OrderDTO> response = new ApiResponse<>(updatedOrderDTO, null);
+        return ResponseEntity.ok(response);
+    }
 }
